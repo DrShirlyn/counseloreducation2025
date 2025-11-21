@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>8 Ps Case Conceptualization Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7fafc;
+      margin: 40px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 32px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 18px rgba(180,180,200,0.1);
+    }
+    h1 {
+      color: #37517e;
+      margin-bottom: 0.3em;
+    }
+    .scenario {
+      font-style: italic;
+      background: #f0f4f8;
+      padding: 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    .p-section {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      min-height: 45px;
+      margin-top: 7px;
+      border: 1px solid #b6b9bb;
+      border-radius: 5px;
+      font-size: 1em;
+      padding: 6px;
+    }
+    button {
+      background: #37517e;
+      color: #fff;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #4669a5;
+    }
+    .feedback {
+      margin-top: 24px;
+      padding: 12px;
+      background: #eaf7ea;
+      border-radius: 8px;
+    }
+    .hidden {
+      display: none;
+    }
+    .ps-explain {
+      color: #37517e;
+      font-size: 0.95em;
+      margin-bottom: 7px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>8 Ps Case Conceptualization Practice</h1>
+    <div class="scenario" id="scenarioBox">
+      <strong>Scenario:</strong>
+      Jordan, a 24-year-old graduate student, presents to counseling with feelings of chronic anxiety, difficulties sleeping, and recent social withdrawal. Jordan reports the anxiety started after a demanding internship began three months ago, and mentions a family history of anxiety disorders. Jordan's support system is limited due to recently moving away from home.
+    </div>
+
+    <form id="conceptForm">
+      <div class="p-section">
+        <label for="presenting">1. Presenting Problem</label>
+        <p class="ps-explain">What primary concern has brought the client to counseling?</p>
+        <textarea id="presenting" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="predisposing">2. Predisposing Factors</label>
+        <p class="ps-explain">Which factors might make the client more vulnerable to the presenting problem?</p>
+        <textarea id="predisposing" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="precipitating">3. Precipitating Factors</label>
+        <p class="ps-explain">What recent events or triggers have contributed to the problem's onset?</p>
+        <textarea id="precipitating" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="perpetuating">4. Perpetuating Factors</label>
+        <p class="ps-explain">What keeps the problem going or makes it worse?</p>
+        <textarea id="perpetuating" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="protective">5. Protective Factors</label>
+        <p class="ps-explain">What strengths/resources might help the client?</p>
+        <textarea id="protective" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="prognosis">6. Prognosis</label>
+        <p class="ps-explain">What is the likely course or outcome for this client?</p>
+        <textarea id="prognosis" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="plan">7. Plan</label>
+        <p class="ps-explain">What are the initial steps in the treatment plan?</p>
+        <textarea id="plan" required></textarea>
+      </div>
+      <div class="p-section">
+        <label for="personality">8. Personality</label>
+        <p class="ps-explain">What aspects of the client's personality are relevant?</p>
+        <textarea id="personality" required></textarea>
+      </div>
+      <button type="submit">Submit Responses</button>
+    </form>
+
+    <div id="feedback" class="feedback hidden"></div>
+  </div>
+
+  <script>
+    // Key guidance points for automatic partial feedback (model answers for the scenario)
+    const answerKeys = {
+      presenting: [
+        "chronic anxiety",
+        "difficulties sleeping",
+        "social withdrawal"
+      ],
+      predisposing: [
+        "family history of anxiety",
+        "recent move",
+        "limited support system"
+      ],
+      precipitating: [
+        "demanding internship",
+        "three months ago"
+      ],
+      perpetuating: [
+        "limited support system",
+        "ongoing stress from internship"
+      ],
+      protective: [
+        "young adult",
+        "seeking help",
+        "motivation for change"
+      ],
+      prognosis: [
+        "good with support",
+        "depends on intervention"
+      ],
+      plan: [
+        "increase support system",
+        "address anxiety symptoms",
+        "sleep hygiene",
+        "coping skills"
+      ],
+      personality: [
+        "likely conscientious",
+        "possibly introverted"
+      ]
+    };
+
+    // Returns hints based on key concepts included in the user's answer per P
+    function getHints(pKey, userInput) {
+      const keys = answerKeys[pKey];
+      if (!keys) return '';
+      let hits = keys.filter(k => userInput.toLowerCase().includes(k));
+      if (hits.length > 0) {
+        return `You addressed: ${hits.join(', ')}.`;
+      }
+      return "Consider if you included: " + keys.slice(0,2).join(', ') + ".";
+    }
+
+    document.getElementById('conceptForm').onsubmit = function(event) {
+      event.preventDefault();
+      let feedback = "";
+      ['presenting', 'predisposing', 'precipitating', 'perpetuating', 'protective', 'prognosis', 'plan', 'personality'].forEach(function(pKey){
+          const userInput = document.getElementById(pKey).value;
+          feedback += `<strong>${pKey.charAt(0).toUpperCase() + pKey.slice(1)}:</strong> ${getHints(pKey, userInput)}<br>`;
+      });
+      document.getElementById('feedback').innerHTML = feedback;
+      document.getElementById('feedback').classList.remove('hidden');
+      window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+    }
+  </script>
+</body>
+</html>
